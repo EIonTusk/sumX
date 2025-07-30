@@ -18,6 +18,7 @@ type ReqObj = {
         from: string
         to: string
         limit: number
+        created_at: string
     }
     summary: Summary[]
     tweets: string[]
@@ -29,6 +30,9 @@ export default function SummaryCard({ data }: Props) {
     return (
         <Card className="w-full bg-card max-w-2xl min-w-2xl shadow-2xl rounded-2xl backdrop-blur ml-24 mb-24">
             <CardHeader>
+                <p className="text-muted-foreground text-xs">
+                        {data.params.created_at}
+                </p>
                 <CardTitle>
                     {data.params.username}
                 </CardTitle>

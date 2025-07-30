@@ -187,8 +187,8 @@ function App() {
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
             <Toaster />
             <div className="max-h-screen min-h-screen relative flex items-center justify-center p-4 overflow-hidden min-w-screen">
-                <div className="absolute right-0 top-0 m-8">
-                    <Button onClick={() => {setShowLast(!showLast)}}>
+                <div className="absolute right-0 top-0 m-8 z-10">
+                    <Button onClick={() => {setShowLast(!showLast)}} className="backdrop-blur-md bg-primary/60 cursor-pointer">
                         {showLast ? "hide summaries" : "show summaries"}
                     </Button>
                 </div>
@@ -258,7 +258,7 @@ function App() {
                         )}
 
                         <div className="flex justify-center">
-                            <Button variant={timeLeft === "" ? "default" : "ghost"} onClick={fetchData} disabled={loading || timeLeft !== ""} className="rounded-xl px-6 cursor-pointer">
+                            <Button variant={timeLeft === "" ? "default" : "ghost"} onClick={fetchData} disabled={loading || timeLeft !== "" || username === ""} className="rounded-xl px-6 cursor-pointer backdrop-blur-md bg-primary/60">
                                 {loading ? <Loader2 className="animate-spin" /> : timeLeft ? <div className="text-foreground">Next request possible in {delta}</div> : "Fetch"}
                             </Button>
                         </div>
@@ -266,7 +266,7 @@ function App() {
                     </CardContent>
                 </Card>
             </div>
-            <div className="flex flex-col w-max min-h-screen max-h-screen overflow-y-auto mt-24 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex flex-col w-max min-h-screen max-h-screen overflow-y-auto pt-24 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
             {(showLast) && (
                 <div className="min-w-2xl">
                 </div>
