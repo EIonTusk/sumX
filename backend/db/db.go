@@ -38,7 +38,6 @@ func Connect() *bun.DB {
     }
 
 	models := []any {
-		(*User)(nil),
 		(*XUser)(nil),
 		(*Summary)(nil),
 	}
