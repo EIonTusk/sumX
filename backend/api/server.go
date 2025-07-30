@@ -40,10 +40,11 @@ type SummaryFrontend struct{
 }
 
 type SummaryParams struct{
-	Username string `json:"username"`
-	From string 	`json:"from"`
-	To string 		`json:"to"`
-	Limit int64 	`json:"limit"`
+	Username string 	`json:"username"`
+	From string 		`json:"from"`
+	To string 			`json:"to"`
+	Limit int64 		`json:"limit"`
+	CreatedAt string	`json:"created_at"`
 }
 
 
@@ -115,6 +116,7 @@ func (s *Server) handleGetSummaries(c *gin.Context) {
 				From: from,
 				To: to,
 				Limit: int64(d.Limit),
+				CreatedAt: d.CreatedAt.Format(time.RFC3339),
 			},
 			Summary: d.Summary,
 			Tweets: d.Tweets,
@@ -221,6 +223,7 @@ func (s *Server) handleSummarize(c *gin.Context) {
 				"from": from,
 				"to": to,
 				"limit": limit, 
+				"created_at": time.Now().UTC().Format(time.RFC3339),
 			},
 			"summary": jsonData,
 			"tweets": tweetsAsString,

@@ -68,12 +68,12 @@ func FetchTweetsByUsernameTimeframe(userID string, from string, to string, limit
 		return nil, nextReset, errors.New("request limit reached for X")
 	}
 	if resp.StatusCode != 200 {
-		return nil, nextReset, errors.New("failed to fetch tweets")
+		return nil, "", errors.New("failed to fetch tweets")
 	}
 
 	var res tweetsResponse
 	if err := json.Unmarshal(body, &res); err != nil {
-		return nil, nextReset, err
+		return nil, "", err
 	}
 
 	return res.Data, nextReset, nil
