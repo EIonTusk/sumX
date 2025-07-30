@@ -6,17 +6,6 @@ import (
 	"github.com/uptrace/bun"
 )
 
-type User struct {
-    bun.BaseModel `bun:"table:users,alias:u"`
-
-    ID        int64     `bun:",pk,autoincrement"`
-    UserName  string    `bun:",notnull"`
-    Email     string    `bun:",unique,notnull"`
-    CreatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp"`
-
-	Summaries []*Summary `bun:"rel:has-many,join:id=user_id"`
-}
-
 type XUser struct {
 	bun.BaseModel `bun:"table:xusers,alias:xu"`
 
@@ -43,5 +32,4 @@ type Summary struct {
     CreatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp"`
 
     XUser     *XUser    `bun:"rel:belongs-to,join:x_user_id=id"`
-    User      *User    `bun:"rel:belongs-to,join:user_id=id"`
 }
