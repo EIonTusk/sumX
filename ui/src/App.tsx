@@ -7,24 +7,8 @@ import { Label } from "@/components/ui/label"
 import { toast, Toaster } from "sonner";
 import { Loader2 } from "lucide-react";
 import { parseISO, formatDuration, intervalToDuration } from 'date-fns';
-import SummaryCard from "./components/summary-card";
+import SummaryCard, { type ReqObj} from "@/components/summary-card";
 
-type Summary = {
-    heading: string
-    text: string
-}
-
-
-type ReqObj = {
-    params: {
-        username: string
-        from: string
-        to: string
-        limit: number
-    }
-    summary: Summary[]
-    tweets: string[]
-}
 
 function App() {
     const [username, setUsername] = useState("");

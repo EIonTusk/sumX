@@ -6,13 +6,13 @@ type Props = {
   data: ReqObj;
 };
 
-type Summary = {
+export type Summary = {
     heading: string
     text: string
 }
 
 
-type ReqObj = {
+export type ReqObj = {
     params: {
         username: string
         from: string
@@ -24,7 +24,7 @@ type ReqObj = {
     tweets: string[]
 }
 
-export default function SummaryCard({ data }: Props) {
+function SummaryCard({ data }: Props) {
     const [showRaw, setShowRaw] = useState(false);
 
     return (
@@ -77,3 +77,4 @@ export default function SummaryCard({ data }: Props) {
         </Card>
     )
 }
+export default SummaryCard
