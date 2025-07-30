@@ -228,6 +228,8 @@ function App() {
                                             value={limit}
                                             onChange={(e) => setLimit(e.target.value)}
                                             type="number"
+                                            min="5"
+                                            max="100"
                                             className="flex-1 max-w-sm text-center rounded-xl shadow"
                                         />
                                     </div>
