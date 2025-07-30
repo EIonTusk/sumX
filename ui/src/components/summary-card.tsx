@@ -3,8 +3,25 @@ import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 type Props = {
-  data: any;
+  data: ReqObj;
 };
+
+type Summary = {
+    heading: string
+    text: string
+}
+
+
+type ReqObj = {
+    params: {
+        username: string
+        from: string
+        to: string
+        limit: number
+    }
+    summary: Summary[]
+    tweets: string[]
+}
 
 export default function SummaryCard({ data }: Props) {
     const [showRaw, setShowRaw] = useState(false);
@@ -21,7 +38,7 @@ export default function SummaryCard({ data }: Props) {
                     {data.params.to != "" ? `to ${data.params.to} ` : ""}
                 </CardDescription>
                 <CardAction>
-                    <CopyButton content={data.summary.map(item => `${item.heading}\n${item.text}`).join("\n\n")} size="md" variant="secondary" />
+                    <CopyButton content={data.summary.map(item  => `${item.heading}\n${item.text}`).join("\n\n")} size="md" variant="secondary" />
                 </CardAction>
             </CardHeader>
             <CardContent className="">

@@ -2,12 +2,29 @@ import { useState, useRef, useEffect } from "react";
 import { ThemeProvider } from "@/components/theme-provider"
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, } from "@/components/ui/card";
 import { Label } from "@/components/ui/label"
 import { toast, Toaster } from "sonner";
 import { Loader2 } from "lucide-react";
-import { differenceInSeconds, parseISO, formatDuration, intervalToDuration } from 'date-fns';
+import { parseISO, formatDuration, intervalToDuration } from 'date-fns';
 import SummaryCard from "./components/summary-card";
+
+type Summary = {
+    heading: string
+    text: string
+}
+
+
+type ReqObj = {
+    params: {
+        username: string
+        from: string
+        to: string
+        limit: number
+    }
+    summary: Summary[]
+    tweets: string[]
+}
 
 function App() {
     const [username, setUsername] = useState("");
@@ -18,10 +35,10 @@ function App() {
     const [showLast, setShowLast] = useState(false);
     const [loading, setLoading] = useState(false);
     const [timeLeft, setTimeLeft] = useState("");
-    const [summaries, setSummaries] = useState([]);
+    const [summaries, setSummaries] = useState<ReqObj[]>([]);
     const [delta, setDelta] = useState('');
 
-    const ref = useRef(null);
+    const ref = useRef<HTMLDivElement>(null);
 
     const today = new Date().toISOString().split('T')[0];
 
@@ -69,7 +86,7 @@ function App() {
         }
     };
 
-    function userInput(e) {
+    function userInput(e: React.ChangeEvent<HTMLInputElement>) {
         const username: string = e.target.value;
         if (username === "@") {
             setUsername("");
@@ -83,7 +100,7 @@ function App() {
     }
 
     useEffect(() => {
-        const el = ref.current;
+        const el: any = ref.current;
         if (!el) return;
 
         // Manually trigger transition by changing styles
@@ -114,7 +131,7 @@ function App() {
                     return
                 }
 
-                const cleanedData = data.data.map((e) => {
+                const cleanedData = data.data.map((e: ReqObj) => {
                     return {
                         ...e,
                         params: {
@@ -171,7 +188,7 @@ function App() {
             <Toaster />
             <div className="max-h-screen min-h-screen relative flex items-center justify-center p-4 overflow-hidden min-w-screen">
                 <div className="absolute right-0 top-0 m-8">
-                    <Button onClick={(e) => {setShowLast(!showLast)}}>
+                    <Button onClick={() => {setShowLast(!showLast)}}>
                         {showLast ? "hide summaries" : "show summaries"}
                     </Button>
                 </div>
