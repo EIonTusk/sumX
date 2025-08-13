@@ -27,6 +27,7 @@ type Summary struct {
     From      time.Time `bun:",nullzero"`
     To        time.Time `bun:",nullzero"`
     Limit     int16     `bun:",nullzero"`
+    RetweetsIncluded     bool     `bun:",nullzero"`
 	Summary 	[]SummaryData `bun:",nullzero"`
 	Tweets []string	`bun:",nullzero"`	
     CreatedAt time.Time `bun:",nullzero,notnull,default:current_timestamp"`

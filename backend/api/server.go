@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"net/url"
 	"os"
 	"strconv"
 	"time"
@@ -44,6 +45,7 @@ type SummaryParams struct{
 	From string 		`json:"from"`
 	To string 			`json:"to"`
 	Limit int64 		`json:"limit"`
+	RetweetsIncluded bool	`json:"retweets"`
 	CreatedAt string	`json:"created_at"`
 }
 
@@ -116,6 +118,7 @@ func (s *Server) handleGetSummaries(c *gin.Context) {
 				From: from,
 				To: to,
 				Limit: int64(d.Limit),
+				RetweetsIncluded: d.RetweetsIncluded,
 				CreatedAt: d.CreatedAt.Format(time.RFC3339),
 			},
 			Summary: d.Summary,
@@ -144,8 +147,22 @@ func (s *Server) handleSummarize(c *gin.Context) {
 		return
 	}
 
-	from := c.DefaultQuery("from", "")
-	to := c.DefaultQuery("to", "")
+	from, errfrom := url.QueryUnescape(c.DefaultQuery("from", ""))
+	to, errto := url.QueryUnescape(c.DefaultQuery("to", ""))
+
+	if errfrom != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed converting from date"})
+	}
+
+	if errto != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed converting from date"})
+	}
+
+	retweetsIncludedString := c.DefaultQuery("retweets", "0")
+	retweetsIncluded, err := strconv.ParseBool(retweetsIncludedString)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to interpret if retweets should be included"})
+	}
 
 	var xUser db.XUser
 	var userID string
@@ -154,9 +171,8 @@ func (s *Server) handleSummarize(c *gin.Context) {
 	if errors.Is(err, sql.ErrNoRows) {
 		userID, err = x.FetchUserID(username, s.Config.XBearerToken)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve userID from username"})
 		}
-
 		userIDInt64, err := strconv.ParseInt(userID, 10, 64)
 		if err == nil {
 			_ = s.DB.NewInsert().Model(&db.XUser{
@@ -171,11 +187,11 @@ func (s *Server) handleSummarize(c *gin.Context) {
 		userID = strconv.FormatInt(xUser.ID, 10)
 	}
 
-	tweets, nextReset, err := x.FetchTweetsByUsernameTimeframe(userID, from, to, limit, s.Config.XBearerToken)
+	tweets, nextReset, err := x.FetchTweetsByUsernameTimeframe(userID, from, to, limit, retweetsIncluded, s.Config.XBearerToken)
 	if err != nil {
 		nextResetInt, err1 := strconv.ParseInt(nextReset, 10, 64)
 		if err1 != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err1.Error()})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 		rTime := time.Unix(nextResetInt, 0).UTC().Format(time.RFC3339)
@@ -211,6 +227,7 @@ func (s *Server) handleSummarize(c *gin.Context) {
 			From: fromTime,
 			To: toTime,
 			Limit: int16(limit),
+			RetweetsIncluded: retweetsIncluded,
 			Summary: jsonData,
 			Tweets: tweetsAsString,
 		}).Scan(context.Background())

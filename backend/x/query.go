@@ -19,11 +19,15 @@ type tweetsResponse struct {
 }
 
 // FetchTweetsByUsernameTimeframe fetches tweets between start and end time
-func FetchTweetsByUsernameTimeframe(userID string, from string, to string, limit int, bearerToken string) ([]Tweet, string, error) {
+func FetchTweetsByUsernameTimeframe(userID string, from string, to string, limit int, retweetsIncluded bool, bearerToken string) ([]Tweet, string, error) {
 	url := fmt.Sprintf(
-		"https://api.twitter.com/2/users/%s/tweets?tweet.fields=text&exclude=retweets,replies",
+		"https://api.twitter.com/2/users/%s/tweets?tweet.fields=text&exclude=replies",
 		userID,
 	)
+
+	if !retweetsIncluded {
+		url += ",retweets"
+	}
 
 	if from != "" {
 		_, err := time.Parse(time.RFC3339, from)
