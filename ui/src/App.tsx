@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, } from "@/components/ui/card";
 import { Label } from "@/components/ui/label"
+import { Checkbox } from "@/components/ui/checkbox"
 import { toast, Toaster } from "sonner";
 import { Loader2 } from "lucide-react";
 import { parseISO, formatDuration, intervalToDuration } from 'date-fns';
@@ -13,6 +14,7 @@ import SummaryCard, { type ReqObj} from "@/components/summary-card";
 function App() {
     const [username, setUsername] = useState("");
     const [limit, setLimit] = useState("");
+    const [retweets, setRetweets] = useState(false)
     const [fromDate, setFromDate] = useState("");
     const [toDate, setToDate] = useState("");
     const [showAdvanced, setShowAdvanced] = useState(false);
@@ -32,6 +34,7 @@ function App() {
 
         const query = new URLSearchParams({});
         if (limit) query.append("limit", limit);
+        if (retweets) query.append("retweets", "1")
         if (fromDate) query.append("from", fromDate+"T00:00:00Z");
         if (toDate) query.append("to", toDate+"T23:59:59Z");
 
@@ -206,7 +209,27 @@ function App() {
                             <>
                                 <div className="flex flex-col md:flex-row md:space-x-2 items-center justify-center space-y-2 md:space-y-0">
                                     <div className="grid w-full max-w-sm items-center gap-3">
-                                        <Label htmlFor="email">Limit</Label>
+                                        <Label htmlFor="from">From</Label>
+                                        <Input
+                                            placeholder={today}
+                                            value={fromDate}
+                                            onChange={(e) => setFromDate(e.target.value)}
+                                            type="date"
+                                            className="flex-1 max-w-sm text-center rounded-xl shadow"
+                                        />
+                                    </div>
+                                    <div className="grid w-full max-w-sm items-center gap-3">
+                                        <Label htmlFor="to">To</Label>
+                                        <Input
+                                            placeholder={today}
+                                            value={toDate}
+                                            onChange={(e) => setToDate(e.target.value)}
+                                            type="date"
+                                            className="flex-1 max-w-sm text-center rounded-xl shadow"
+                                        />
+                                    </div>
+                                    <div className="grid w-full max-w-sm items-center gap-3">
+                                        <Label htmlFor="limit">Limit</Label>
                                         <Input
                                             placeholder="10"
                                             value={limit}
@@ -217,26 +240,10 @@ function App() {
                                             className="flex-1 max-w-sm text-center rounded-xl shadow"
                                         />
                                     </div>
-                                    <div className="grid w-full max-w-sm items-center gap-3">
-                                        <Label htmlFor="email">From</Label>
-                                        <Input
-                                            placeholder={today}
-                                            value={fromDate}
-                                            onChange={(e) => setFromDate(e.target.value)}
-                                            type="date"
-                                            className="flex-1 max-w-sm text-center rounded-xl shadow"
-                                        />
-                                    </div>
-                                    <div className="grid w-full max-w-sm items-center gap-3">
-                                        <Label htmlFor="email">To</Label>
-                                        <Input
-                                            placeholder={today}
-                                            value={toDate}
-                                            onChange={(e) => setToDate(e.target.value)}
-                                            type="date"
-                                            className="flex-1 max-w-sm text-center rounded-xl shadow"
-                                        />
-                                    </div>
+                                </div>
+                                <div className="flex justify-center items-center align-middle justify-items-center text-center gap-3 w-full">
+                                    <Checkbox checked={retweets} onCheckedChange={() => setRetweets(!retweets)}/>
+                                    <p className="text-sm text-muted-foreground">include retweets</p>
                                 </div>
                             </>
                         )}
