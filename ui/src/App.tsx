@@ -158,7 +158,8 @@ function App() {
               .replace(/\bdays?\b/g, 'd')
               .replace(/\bseconds?\b/g, 's');
           if (now > target) {
-              setDelta("")
+              setDelta("");
+              return;
           }
           setDelta(`${formatted}`);
         };
@@ -249,8 +250,8 @@ function App() {
                         )}
 
                         <div className="flex justify-center">
-                            <Button variant={timeLeft === "" ? "default" : "ghost"} onClick={fetchData} disabled={loading || timeLeft !== "" || username === ""} className="rounded-xl px-6 cursor-pointer backdrop-blur-md bg-primary/60">
-                                {loading ? <Loader2 className="animate-spin" /> : timeLeft ? <div className="text-foreground">Next request possible in {delta}</div> : "Fetch"}
+                            <Button variant={delta === "" ? "default" : "ghost"} onClick={fetchData} disabled={loading || delta !== "" || username === ""} className="rounded-xl px-6 cursor-pointer backdrop-blur-md bg-primary/60">
+                                {loading ? <Loader2 className="animate-spin" /> : delta !== "" ? <div className="text-foreground">Next request possible in {delta}</div> : "Fetch"}
                             </Button>
                         </div>
 
